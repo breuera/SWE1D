@@ -44,13 +44,37 @@ T WavePropagation::computeNumericalFluxes()
 	for (unsigned int i = 1; i < m_size+2; i++) {
 		T maxEdgeSpeed;
 
-		// Compute net updates
-		m_solver.computeNetUpdates( m_h[i-1], m_h[i],
-				m_hu[i-1], m_hu[i],
-				0.f, 0.f,	// Bathymetry
-				m_hNetUpdatesLeft[i-1], m_hNetUpdatesRight[i-1],
-				m_huNetUpdatesLeft[i-1], m_huNetUpdatesRight[i-1],
-				maxEdgeSpeed );
+    // convert from soa t aos
+    double l_variablesLeft[3];
+    double l_variablesRight[3];
+    double l_netUpdatesLeft[3];
+    double l_netUpdatesRight[3];
+    double l_waveSpeeds[3];
+
+    l_variablesLeft[0] = m_h[i-1];
+    l_variablesLeft[1] = m_hu[i-1];
+    l_variablesLeft[2] = 0;
+
+    l_variablesRight[0] = m_h[i];
+    l_variablesRight[1] = m_hu[i];
+    l_variablesRight[2] = 0;
+
+    // call the GeoClaw solver
+    c_bind_geoclaw_riemann_aug_JCP( 1,
+                                    l_variablesLeft, l_variablesRight,
+                                    0.0001, 9.81,
+                                    l_netUpdatesLeft,l_netUpdatesRight,
+                                    l_waveSpeeds );
+
+    // convert from aos to soa
+    m_hNetUpdatesLeft[i-1]  = l_netUpdatesLeft[0];
+    m_huNetUpdatesLeft[i-1] = l_netUpdatesLeft[1];
+
+    m_hNetUpdatesRight[i-1]  = l_netUpdatesRight[0];
+    m_huNetUpdatesRight[i-1] = l_netUpdatesRight[1];
+
+    // compute maximum wave speed from first and third wave family
+    maxEdgeSpeed = std::max( std::abs( l_waveSpeeds[0] ), std::abs( l_waveSpeeds[2] ) );
 
 		// Update maxWaveSpeed
 		if (maxEdgeSpeed > maxWaveSpeed)

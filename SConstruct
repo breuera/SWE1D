@@ -52,7 +52,15 @@ print ''
 import os
 
 # Scons environement
-env = Environment()
+env = Environment( ENV = os.environ)
+
+# use intel compilers
+env['CXX'] = 'icpc'
+env['FORTRAN'] = env['F90'] = 'ifort'
+env.Append(FORTRANFLAGS=['-fpp']) #run preprocessor before compiling
+env.Append(F90FLAGS=['-fpp'])
+env['LINK'] = env['FORTRAN']
+env.Append(LINKFLAGS=['-nofor-main', '-cxxlib']) 
 
 # eclipse specific flag
 env.Append(CCFLAGS=['-fmessage-length=0'])
@@ -74,5 +82,10 @@ SConscript(os.path.join('src', 'SConscript'),
     duplicate=0)
 Import('env')
 
+# remove .mod entries for the linker
+sourceFiles = []
+for sourceFile in env.srcFiles:
+    sourceFiles.append(sourceFile[0]) 
+
 # Build the program
-env.Program(os.path.join(buildDir, programName), env.srcFiles)
+env.Program(os.path.join(buildDir, programName), sourceFiles)

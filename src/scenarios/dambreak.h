@@ -60,9 +60,9 @@ public:
 	unsigned int getHeight(unsigned int pos)
 	{
 		if (pos <= m_size/2)
-			return 253;
+			return 10;
 
-		return 250;
+		return 0;
 	}
 
 	/**

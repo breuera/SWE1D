@@ -1,3 +1,6 @@
 [submodule "submodules/solvers"]
 	path = submodules/solvers
-	url = git://github.com/TUM-I5/swe_solvers.git
+	url = git://github.com/TUM-I5/swe_solvers.git 
+[submodule "submodules/geoclaw"]
+	path = submodules/geoclaw
+	url = git@github.com:breuera/geoclaw.git

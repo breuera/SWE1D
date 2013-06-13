@@ -38,10 +38,12 @@
 #define WAVEPROPAGATION_H_
 
 #include "types.h"
+#include <algorithm>
+#include <cmath>
 
 // Include the solver that is currently used
 #define SUPPRESS_SOLVER_DEBUG_OUTPUT
-#include "solvers/FWave.hpp"
+#include "solvers/AugRieGeoClaw.hpp"
 
 /**
  * Allocated variables:
@@ -85,9 +87,6 @@ private:
 	unsigned int m_size;
 
 	T m_cellSize;
-
-	/** The solver used in computeNumericalFluxes */
-	solver::FWave<T> m_solver;
 
 public:
 	/**

@@ -47,6 +47,12 @@ def allInDir(dir, files):
 sourceFiles = ['main.cpp', 'WavePropagation.cpp']
 sourceFiles += allInDir('tools', ['args.cpp', 'logger.cpp'])
 
+# GeoClaw solver
+sourceFiles.append( 'geoclaw/riemannsolvers.f' )
+sourceFiles.append( 'geoclaw/c_bind_riemannsolvers.f90' ) 
+
+print sourceFiles
+
 # Add source files to scons env
 for f in sourceFiles:
     env.srcFiles.append(env.Object(f))
